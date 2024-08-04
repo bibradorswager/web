@@ -1,0 +1,33 @@
+Estoy instalando todo en una maquina virtual hasta ahora no tengo nada. ni toad, nisiquiera oracle
+
+
+-- 1 MyEspace
+CREATE TABLESPACE MyEspace
+DATAFILE 'MyEspace.dbf' SIZE 100M
+AUTOEXTEND ON NEXT 10M MAXSIZE UNLIMITED;
+
+-- 2 El profile profile_MyEspace
+CREATE PROFILE profile_MyEspace LIMIT
+SESSIONS_PER_USER 3
+PASSWORD_LIFE_TIME 60
+CPU_PER_SESSION 1
+FAILED_LOGIN_ATTEMPTS 4
+PASSWORD_GRACE_TIME 5
+IDLE_TIME 900; -- 15 minutos en segundos
+
+-- 3 El rol miRol y asignar los privilegios
+CREATE ROLE miRol;
+GRANT CREATE SESSION TO miRol;
+GRANT SELECT ANY TABLE TO miRol;
+GRANT INSERT ANY TABLE TO miRol;
+GRANT UPDATE ANY TABLE TO miRol;
+GRANT DELETE ANY TABLE TO miRol;
+GRANT CREATE TABLE TO miRol;
+GRANT CREATE VIEW TO miRol;
+
+-- 4 El usuario miEsquema y asignar tablespace, profile y rol
+CREATE USER miEsquema IDENTIFIED BY contraseña
+DEFAULT TABLESPACE MyEspace
+TEMPORARY TABLESPACE temp
+PROFILE profile_MyEspace;
+GRANT miRol TO miEsquema;
